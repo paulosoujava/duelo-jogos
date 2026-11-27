@@ -4,6 +4,11 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Duelo! Jogos para dois</title>
+<meta name="description" content="Jogo da Velha, Forca, Damas e Dominó para dois jogadores, cada um no seu celular. Crie a sala e mande o link.">
+<meta property="og:title" content="Duelo! Bora jogar?">
+<meta property="og:description" content="Te chamaram para um duelo: Jogo da Velha, Forca, Damas ou Dominó. Toque no link, coloque seu nome e jogue.">
+<meta name="theme-color" content="#ffd84d">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='28' fill='%23ff4b3e' stroke='%231c1917' stroke-width='5'/%3E%3Ccircle cx='23' cy='29' r='5' fill='%23fff'/%3E%3Ccircle cx='41' cy='29' r='5' fill='%23fff'/%3E%3Cpath d='M20 40 Q32 52 44 40' fill='none' stroke='%231c1917' stroke-width='5' stroke-linecap='round'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Nunito:wght@600;800;900&display=swap" rel="stylesheet">
 <style>
@@ -236,7 +241,7 @@ text-shadow:3px 0 var(--line),-3px 0 var(--line),0 3px var(--line),0 -3px var(--
 <main id="home" class="view on">
   <header class="hero">
     <h1 class="logo">Duelo<span>!</span></h1>
-    <p class="sub">Três jogos, dois jogadores, cada um no seu celular.</p>
+    <p class="sub">Quatro jogos, dois jogadores, cada um no seu celular.</p>
   </header>
   <div class="faces" aria-hidden="true"><span class="av" id="hf0"></span><span class="vs">VS</span><span class="av" id="hf1"></span></div>
   <section class="panel">
@@ -456,13 +461,13 @@ function enterRoom(asMe){
   const saved=SS.get('duelo-S-'+code,null);
   S=saved&&valid(saved)?saved:blank();
   S.names[me]=myName;S.v++;saveS();
-  LS.set('duelo-room-'+code,{me});
+  SS.set('duelo-room-'+code,{me});
   try{location.hash='sala-'+code}catch(e){}
   $('#link').value=linkFor();
   show('lobby');render();connect();
 }
 function hostRoom(){if(!readName())return;sfx.a();code=Math.random().toString(36).slice(2,7).padEnd(5,'x');enterRoom(0)}
-function joinRoom(){if(!readName())return;sfx.a();const r=LS.get('duelo-room-'+code,null);enterRoom(r&&r.me===0?0:1)}
+function joinRoom(){if(!readName())return;sfx.a();const r=SS.get('duelo-room-'+code,null);enterRoom(r&&r.me===0?0:1)}
 function localGame(){if(!readName())return;sfx.a();if(net)net.close();net=null;local=true;me=0;code='';peerOn=true;S=blank();S.names=[myName,LS.get('duelo-p2','')];show('lobby');render()}
 function leave(){if(net)net.close();net=null;S=null;local=false;peerOn=false;code='';closeModal();try{location.hash=''}catch(e){}bootHome();show('home')}
 function bootHome(){
