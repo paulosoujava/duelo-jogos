@@ -4,9 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Duelo! Jogos para dois</title>
-<meta name="description" content="Jogo da Velha, Forca, Damas e Dominó para dois jogadores, cada um no seu celular. Crie a sala e mande o link.">
+<meta name="description" content="Jogo da Velha, Forca, Damas, Dominó e Xadrez com professor para dois jogadores, cada um no seu celular. Crie a sala e mande o link.">
 <meta property="og:title" content="Duelo! Bora jogar?">
-<meta property="og:description" content="Te chamaram para um duelo: Jogo da Velha, Forca, Damas ou Dominó. Toque no link, coloque seu nome e jogue.">
+<meta property="og:description" content="Te chamaram para um duelo: Jogo da Velha, Forca, Damas, Dominó ou Xadrez. Toque no link, coloque seu nome e jogue.">
 <meta name="theme-color" content="#ffd84d">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='28' fill='%23ff4b3e' stroke='%231c1917' stroke-width='5'/%3E%3Ccircle cx='23' cy='29' r='5' fill='%23fff'/%3E%3Ccircle cx='41' cy='29' r='5' fill='%23fff'/%3E%3Cpath d='M20 40 Q32 52 44 40' fill='none' stroke='%231c1917' stroke-width='5' stroke-linecap='round'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -219,6 +219,35 @@ text-shadow:3px 0 var(--line),-3px 0 var(--line),0 3px var(--line),0 -3px var(--
 .new{animation:popin .45s cubic-bezier(.3,1.6,.5,1)}
 .cover{width:100%;min-height:96px;font-size:21px}
 @media(max-width:380px){.ht .tl{height:72px}}
+.a4{background:var(--p1)}
+.xz{display:grid;gap:10px}
+.tray{display:flex;align-items:center;gap:4px;min-height:26px;font-size:14px;font-weight:900;flex-wrap:wrap}
+.tray span{margin-right:4px}.tray .xpc{width:20px;height:20px}.tray b{margin-left:4px}
+.xb{position:relative;width:min(100%,520px);aspect-ratio:1;margin:0 auto;border:5px solid var(--line);border-radius:16px;overflow:hidden;box-shadow:0 8px 0 var(--line);display:grid;grid-template-columns:repeat(8,minmax(0,1fr));grid-template-rows:repeat(8,minmax(0,1fr))}
+.xq{position:relative;border:0;padding:0;display:grid;place-items:center;background-color:#ffe7a8}
+.xq.d{background-color:#b5764c}
+.xp{width:88%;height:88%;display:grid;place-items:center;pointer-events:none}
+.xp svg{width:100%;height:100%;filter:drop-shadow(0 2px 0 rgba(0,0,0,.35))}
+.xp.slide{position:relative;z-index:5;animation:xslide .3s cubic-bezier(.4,1.3,.6,1)}
+@keyframes xslide{from{transform:translate(calc(var(--dx)*113.6%),calc(var(--dy)*113.6%))}}
+.rk,.fl{position:absolute;font:800 10px/1 Nunito,sans-serif;font-style:normal;color:rgba(28,25,23,.6);pointer-events:none}
+.rk{left:3px;top:3px}.fl{right:3px;bottom:3px}
+.xq.lf,.xq.lt{background-image:linear-gradient(rgba(255,216,77,.6),rgba(255,216,77,.6))}
+.xq.sel{box-shadow:inset 0 0 0 4px var(--gold)}
+.xq.mv::after{content:'';position:absolute;width:30%;height:30%;border-radius:50%;background:rgba(28,25,23,.35)}
+.xq.cp::after{content:'';position:absolute;inset:5%;border-radius:50%;border:4px solid rgba(255,75,62,.9)}
+.xq.risk{background-image:linear-gradient(rgba(255,75,62,.5),rgba(255,75,62,.5))}
+.xq.risk.mv::after{background:#c2271b}
+.xq.chk{background-image:radial-gradient(circle,rgba(255,40,30,.95) 0,rgba(255,75,62,.45) 55%,transparent 72%)}
+.xq.hf,.xq.ht{box-shadow:inset 0 0 0 4px var(--p1)}
+.xar{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:6}
+.coach{display:flex;gap:12px;align-items:flex-start;margin-top:4px;padding:14px}
+.prof{width:62px;flex:none;animation:bob 2.4s ease-in-out infinite}
+.bub{flex:1;font-size:15px;line-height:1.45}.bub p{margin:0 0 6px}
+.xbtns{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}.xbtns .btn{font-size:16px;min-height:46px;padding:0 14px}
+.xbtns .btn:disabled{opacity:.45}
+.promo{flex-direction:column;min-height:96px;padding:6px 10px;font-size:16px}.promo svg{width:48px;height:48px}
+.gp{display:flex;gap:10px;text-align:left;align-items:flex-start;margin:12px 0;font-size:15px}.gp svg{width:44px;height:44px;flex:none}
 @keyframes enter{from{opacity:0;transform:translateY(12px)}}
 @keyframes bob{50%{transform:translateY(-6px) rotate(-4deg)}}
 @keyframes think{25%{transform:rotate(-8deg)}75%{transform:rotate(8deg)}}
@@ -241,7 +270,7 @@ text-shadow:3px 0 var(--line),-3px 0 var(--line),0 3px var(--line),0 -3px var(--
 <main id="home" class="view on">
   <header class="hero">
     <h1 class="logo">Duelo<span>!</span></h1>
-    <p class="sub">Quatro jogos, dois jogadores, cada um no seu celular.</p>
+    <p class="sub">Cinco jogos, dois jogadores, cada um no seu celular.</p>
   </header>
   <div class="faces" aria-hidden="true"><span class="av" id="hf0"></span><span class="vs">VS</span><span class="av" id="hf1"></span></div>
   <section class="panel">
@@ -284,6 +313,7 @@ text-shadow:3px 0 var(--line),-3px 0 var(--line),0 3px var(--line),0 -3px var(--
     <button class="game" data-g="forca"><span class="art a1"><svg viewBox="0 0 60 60" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M8 54H36M16 54V8H42V16" stroke="#fff" stroke-width="5"/><circle cx="42" cy="23" r="7" fill="#ffd84d" stroke="#1c1917" stroke-width="3"/><path d="M42 30V42M42 34l-6 5M42 34l6 5M42 42l-5 8M42 42l5 8" stroke="#1c1917" stroke-width="3.5"/></svg></span><span class="gt">Forca</span><span class="gd">Palavra sorteada. Os dois disputam letra por letra.</span><span class="gs" id="s-forca"></span></button>
     <button class="game" data-g="damas"><span class="art a2"><svg viewBox="0 0 60 60"><rect x="4" y="4" width="52" height="52" rx="5" fill="#ffe7a8" stroke="#1c1917" stroke-width="3"/><path d="M17 5h13v13H17zM43 5h12v13H43zM5 18h12v13H5zM30 18h13v13H30zM17 31h13v12H17zM43 31h12v12H43zM5 43h12v12H5zM30 43h13v12H30z" fill="#8b4f32"/><circle cx="23.5" cy="11.5" r="5" fill="#2f6bff" stroke="#1c1917" stroke-width="2.5"/><circle cx="36.5" cy="24.5" r="5" fill="#2f6bff" stroke="#1c1917" stroke-width="2.5"/><circle cx="23.5" cy="37" r="5" fill="#ff4b3e" stroke="#1c1917" stroke-width="2.5"/><circle cx="11" cy="49" r="5" fill="#ff4b3e" stroke="#1c1917" stroke-width="2.5"/></svg></span><span class="gt">Damas</span><span class="gd">Regras brasileiras: captura obrigatória e dama voadora.</span><span class="gs" id="s-damas"></span></button>
     <button class="game" data-g="domino"><span class="art a3"><svg viewBox="0 0 60 60"><g transform="rotate(-14 30 30)"><rect x="17" y="4" width="26" height="52" rx="6" fill="#fffaf0" stroke="#1c1917" stroke-width="3"/><path d="M21 30H39" stroke="#1c1917" stroke-width="2.5" stroke-linecap="round"/><circle cx="24" cy="11" r="2.8" fill="#ff4b3e"/><circle cx="30" cy="17" r="2.8" fill="#ff4b3e"/><circle cx="36" cy="23" r="2.8" fill="#ff4b3e"/><circle cx="24" cy="37" r="2.8" fill="#2f6bff"/><circle cx="36" cy="37" r="2.8" fill="#2f6bff"/><circle cx="24" cy="49" r="2.8" fill="#2f6bff"/><circle cx="36" cy="49" r="2.8" fill="#2f6bff"/></g></svg></span><span class="gt">Dominó</span><span class="gd">Sete peças para cada um. Quem bater primeiro vence.</span><span class="gs" id="s-domino"></span></button>
+    <button class="game" data-g="xadrez"><span class="art a4"><svg viewBox="0 0 45 45"><g fill="#ff4b3e" stroke="#1c1917" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"><path d="M14 33Q13 24 19.5 19L15 17.5Q14 11 20.5 8L23.5 4.5 26 8.5Q35 12 33.5 22Q33 28 31 33Z"/><rect x="10.5" y="33" width="24" height="6.5" rx="3.2"/><circle cx="23" cy="13" r="1.9" fill="#1c1917" stroke="none"/></g></svg></span><span class="gt">Xadrez com Professor</span><span class="gd">Para iniciantes: o Professor mostra os lances, avisa do perigo e dá dicas.</span><span class="gs" id="s-xadrez"></span></button>
   </section>
   <footer class="foot"><button class="chip" id="reset">Zerar placar</button></footer>
 </main>
@@ -318,8 +348,8 @@ const mk=st=>({get(k,d){try{const v=st.getItem(k);return v?JSON.parse(v):d}catch
 let LS,SS;try{LS=mk(localStorage);SS=mk(sessionStorage)}catch(e){LS=SS={get:(k,d)=>d,set(){}}}
 const ART_URL='https://claude.ai/artifact/Cg5UZfm4NpQTAFUabdRpNj';
 const COL=['#ff4b3e','#2f6bff'];
-const TITLES={velha:'Jogo da Velha',forca:'Forca',damas:'Damas',domino:'Dominó'};
-const GAMES=['velha','forca','damas','domino'];
+const TITLES={velha:'Jogo da Velha',forca:'Forca',damas:'Damas',domino:'Dominó',xadrez:'Xadrez'};
+const GAMES=['velha','forca','damas','domino','xadrez'];
 const inClaude=()=>!!(window.claude&&typeof window.claude.use==='function');
 const rid=()=>Math.floor(Math.random()*2e9)+1;
 let muted=LS.get('duelo-mute',false);
@@ -355,13 +385,14 @@ function face(col,mood,who){
 }
 
 /* ---------- estado compartilhado ---------- */
-const blank=()=>({v:0,names:['',''],game:null,score:{velha:[0,0],forca:[0,0],damas:[0,0],domino:[0,0]},res:null,velha:null,forca:null,damas:null});
+const blank=()=>({v:0,names:['',''],game:null,score:{velha:[0,0],forca:[0,0],damas:[0,0],domino:[0,0],xadrez:[0,0]},res:null,velha:null,forca:null,damas:null});
 function valid(st){
   if(!st||typeof st!=='object'||typeof st.v!=='number'||!Array.isArray(st.names)||st.names.length!==2||!st.score)return false;
   if(st.game!==null&&!GAMES.includes(st.game))return false;
   for(const g of GAMES)if(!Array.isArray(st.score[g])||st.score[g].length!==2)return false;
   if(st.game==='velha'&&!(st.velha&&Array.isArray(st.velha.b)&&st.velha.b.length===9))return false;
   if(st.game==='forca'&&!(st.forca&&Array.isArray(st.forca.ch)&&st.forca.ch.length&&Array.isArray(st.forca.used)))return false;
+  if(st.game==='xadrez'&&!(st.xadrez&&typeof st.xadrez.b==='string'&&st.xadrez.b.length===64&&/^[.pnbrqkPNBRQK]+$/.test(st.xadrez.b)))return false;
   if(st.game==='domino'&&!(st.domino&&Array.isArray(st.domino.hands)&&st.domino.hands.length===2&&st.domino.hands.every(Array.isArray)&&Array.isArray(st.domino.chain)&&Array.isArray(st.domino.pile)))return false;
   if(st.game==='damas'&&!(st.damas&&Array.isArray(st.damas.pc)&&st.damas.pc.length===24))return false;
   st.names=st.names.map(n=>String(n||'').slice(0,12));
@@ -482,10 +513,10 @@ function bootHome(){
 function render(){
   if(!S)return;
   try{
-    if(!S.game){closeModal();show('lobby');renderLobby()}
-    else{show('play');$('#gtitle').textContent=TITLES[S.game];bar();({velha:rV,forca:rF,damas:rD,domino:rDo})[S.game]()}
+    if(!S.game){if($('#modal').dataset.kind==='res')closeModal();show('lobby');renderLobby()}
+    else{show('play');$('#gtitle').textContent=TITLES[S.game];bar();({velha:rV,forca:rF,damas:rD,domino:rDo,xadrez:rX})[S.game]()}
     if(S.res&&S.res.id!==shownRes){const r=S.res;shownRes=r.id;setTimeout(()=>{if(S&&S.res&&S.res.id===r.id)showRes(r)},Number(r.d)||700)}
-    if(!S.res&&!$('#modal').hidden)closeModal();
+    if(!S.res&&!$('#modal').hidden&&$('#modal').dataset.kind==='res')closeModal();
   }catch(e){console.error(e)}
 }
 function renderLobby(){
@@ -526,7 +557,8 @@ function sayTurn(p,mineTxt,otherTxt){
 const youOr=i=>!local&&i===me?'Sua vez':'Vez de '+nm(i);
 
 /* ---------- modal / resultado ---------- */
-function openModal(html){
+function openModal(html,kind){
+  $('#modal').dataset.kind=kind||'res';
   $('#box').innerHTML='<button class="mx" id="mx" aria-label="Fechar"><svg viewBox="0 0 24 24"><path d="M5 5l14 14M19 5L5 19"/></svg></button>'+html;
   const m=$('#modal');m.hidden=false;m.classList.remove('in');void m.offsetWidth;m.classList.add('in');
   $('#mx').onclick=closeModal;
@@ -547,6 +579,7 @@ function newGame(g){
   if(g==='forca')S.forca=newForca(S.forca?S.forca.round+1:0,S.forca);
   if(g==='damas')S.damas=newDamas(S.damas?S.damas.start^1:0);
   if(g==='domino')S.domino=newDomino();
+  if(g==='xadrez')S.xadrez=newXadrez(S.xadrez);
 }
 function again(){if(!S||!S.game)return;if(!local&&!peerOn){toast('Seu adversário está desconectado');return}S.res=null;newGame(S.game);commit()}
 function toLobby(){if(!S)return;S.game=null;S.res=null;commit()}
@@ -947,6 +980,251 @@ function domPass(){
   commit();
 }
 
+/* ---------- XADREZ COM PROFESSOR ---------- */
+const XV={P:1,N:3,B:3,R:5,Q:9,K:100};
+const KN=[[-2,-1],[-2,1],[-1,-2],[-1,2],[1,-2],[1,2],[2,-1],[2,1]];
+const KG=[[-1,-1],[-1,0],[-1,1],[0,-1],[0,1],[1,-1],[1,0],[1,1]];
+const ORTH=[[-1,0],[1,0],[0,-1],[0,1]],DIAG=[[-1,-1],[-1,1],[1,-1],[1,1]];
+const xin=(r,c)=>r>=0&&r<8&&c>=0&&c<8;
+const xside=ch=>ch==='.'?-1:ch===ch.toUpperCase()?0:1;
+const xt=ch=>ch.toUpperCase();
+const sqn=i=>'abcdefgh'[i&7]+(8-(i>>3));
+function attackers(b,sq,by){
+  const r=sq>>3,c=sq&7,out=[],own=ch=>ch!=='.'&&xside(ch)===by;
+  const pr=by===0?r+1:r-1;
+  for(const dc of[-1,1]){const cc=c+dc;if(xin(pr,cc)){const x=b[pr*8+cc];if(own(x)&&xt(x)==='P')out.push({s:pr*8+cc,p:'P'})}}
+  for(const[dr,dc]of KN){const rr=r+dr,cc=c+dc;if(xin(rr,cc)){const x=b[rr*8+cc];if(own(x)&&xt(x)==='N')out.push({s:rr*8+cc,p:'N'})}}
+  for(const[dr,dc]of KG){const rr=r+dr,cc=c+dc;if(xin(rr,cc)){const x=b[rr*8+cc];if(own(x)&&xt(x)==='K')out.push({s:rr*8+cc,p:'K'})}}
+  for(const[dirs,ok]of[[ORTH,'RQ'],[DIAG,'BQ']])for(const[dr,dc]of dirs){let rr=r+dr,cc=c+dc;while(xin(rr,cc)){const x=b[rr*8+cc];if(x!=='.'){if(own(x)&&ok.includes(xt(x)))out.push({s:rr*8+cc,p:xt(x)});break}rr+=dr;cc+=dc}}
+  return out;
+}
+function pseudo(X,t){
+  const b=X.b,ms=[];
+  for(let i=0;i<64;i++){
+    const ch=b[i];if(xside(ch)!==t)continue;
+    const T=xt(ch),r=i>>3,c=i&7;
+    const add=(to,ex)=>ms.push(Object.assign({f:i,t:to,pc:T,cap:b[to]!=='.'?xt(b[to]):null},ex||{}));
+    if(T==='P'){
+      const d=t===0?-1:1,r1=r+d,start=t===0?6:1,last=t===0?0:7;
+      const pushP=to=>{if((to>>3)===last)['Q','R','B','N'].forEach(p=>add(to,{promo:p}));else add(to)};
+      if(xin(r1,c)&&b[r1*8+c]==='.'){pushP(r1*8+c);if(r===start&&b[(r+2*d)*8+c]==='.')add((r+2*d)*8+c,{dbl:true})}
+      for(const dc of[-1,1]){const cc=c+dc;if(!xin(r1,cc))continue;const to=r1*8+cc;if(b[to]!=='.'&&xside(b[to])!==t)pushP(to);else if(to===X.ep&&b[to]==='.')add(to,{ep:true,cap:'P'})}
+    }else if(T==='N'||T==='K'){
+      for(const[dr,dc]of T==='N'?KN:KG){const rr=r+dr,cc=c+dc;if(!xin(rr,cc))continue;const to=rr*8+cc;if(xside(b[to])!==t)add(to)}
+      if(T==='K'){
+        const home=t===0?60:4,cs=X.cast||'',K=t===0?'K':'k',Q=t===0?'Q':'q',R=t===0?'R':'r';
+        if(i===home&&!attackers(b,i,1-t).length){
+          if(cs.includes(K)&&b[i+1]==='.'&&b[i+2]==='.'&&b[i+3]===R&&!attackers(b,i+1,1-t).length&&!attackers(b,i+2,1-t).length)add(i+2,{castle:'K'});
+          if(cs.includes(Q)&&b[i-1]==='.'&&b[i-2]==='.'&&b[i-3]==='.'&&b[i-4]===R&&!attackers(b,i-1,1-t).length&&!attackers(b,i-2,1-t).length)add(i-2,{castle:'Q'});
+        }
+      }
+    }else{
+      const dirs=T==='R'?ORTH:T==='B'?DIAG:ORTH.concat(DIAG);
+      for(const[dr,dc]of dirs){let rr=r+dr,cc=c+dc;while(xin(rr,cc)){const to=rr*8+cc,x=b[to];if(x==='.')add(to);else{if(xside(x)!==t)add(to);break}rr+=dr;cc+=dc}}
+    }
+  }
+  return ms;
+}
+function xapply(X,m){
+  const b=X.b.split(''),ch=b[m.f],t=xside(ch);
+  b[m.t]=m.promo?(t===0?m.promo:m.promo.toLowerCase()):ch;b[m.f]='.';
+  if(m.ep)b[m.t+(t===0?8:-8)]='.';
+  if(m.castle==='K'){b[m.f+1]=b[m.f+3];b[m.f+3]='.'}
+  if(m.castle==='Q'){b[m.f-1]=b[m.f-4];b[m.f-4]='.'}
+  let cast=X.cast||'';
+  if(xt(ch)==='K')cast=cast.replace(t===0?/[KQ]/g:/[kq]/g,'');
+  for(const sq of[m.f,m.t]){if(sq===63)cast=cast.replace('K','');if(sq===56)cast=cast.replace('Q','');if(sq===7)cast=cast.replace('k','');if(sq===0)cast=cast.replace('q','')}
+  return Object.assign({},X,{b:b.join(''),t:1-t,cast,ep:m.dbl?(m.f+m.t)/2:-1,half:(xt(ch)==='P'||m.cap)?0:(X.half||0)+1});
+}
+function inCheck(X,t){const k=X.b.indexOf(t===0?'K':'k');return k>=0&&attackers(X.b,k,1-t).length>0}
+function legal(X){const t=X.t;return pseudo(X,t).filter(m=>inCheck(xapply(X,m),t)===false)}
+const XN={P:'Peão',N:'Cavalo',B:'Bispo',R:'Torre',Q:'Dama',K:'Rei'};
+const fem=T=>T==='Q'||T==='R';
+const seu=T=>fem(T)?'sua':'seu',o_=T=>fem(T)?'a':'o',pel=T=>fem(T)?'pela':'pelo';
+const XHOW={P:'anda 1 casa para frente (2 casas no primeiro lance) e captura na diagonal. Se chegar do outro lado, vira outra peça!',N:'anda em "L": 2 casas numa direção e 1 para o lado. É a única peça que pula por cima das outras.',B:'anda na diagonal, quantas casas quiser. Fica sempre na mesma cor de casa.',R:'anda em linha reta (frente, trás e lados), quantas casas quiser.',Q:'é a peça mais forte: anda como a Torre e o Bispo juntos, em qualquer direção.',K:'anda 1 casa em qualquer direção e nunca pode ir para uma casa atacada. Protegê-lo é o objetivo do jogo!'};
+const XPATH={
+P:'<circle cx="22.5" cy="13" r="6.5"/><path d="M15 34Q15.5 22 22.5 19.5Q29.5 22 30 34Z"/><rect x="11" y="33" width="23" height="6.5" rx="3.2"/>',
+R:'<path d="M12 9h5v4h3.5V9h5v4H29V9h5v9l-3.5 3v11h-16V21L12 18z"/><rect x="10" y="32" width="25" height="7.5" rx="3.2"/>',
+N:'<path d="M14 33Q13 24 19.5 19L15 17.5Q14 11 20.5 8L23.5 4.5 26 8.5Q35 12 33.5 22Q33 28 31 33Z"/><rect x="10.5" y="33" width="24" height="6.5" rx="3.2"/><circle cx="23" cy="13" r="1.9" fill="#1c1917" stroke="none"/>',
+B:'<circle cx="22.5" cy="5.5" r="2.6"/><path d="M22.5 8Q31 14 30 22Q28.5 28.5 22.5 29Q16.5 28.5 15 22Q14 14 22.5 8Z"/><path d="M18.5 29h8l3 4h-14z"/><rect x="11" y="33" width="23" height="6.5" rx="3.2"/><path d="M25.5 14l-5 6" fill="none"/>',
+Q:'<path d="M10 14L15 30H30L35 14L28 22L22.5 10L17 22Z"/><circle cx="10" cy="12" r="2.6"/><circle cx="35" cy="12" r="2.6"/><circle cx="22.5" cy="7.5" r="2.6"/><rect x="12" y="30" width="21" height="4" rx="2"/><rect x="10" y="34" width="25" height="6" rx="3"/>',
+K:'<path d="M22.5 3.5v8M18.5 7.5h8" fill="none" stroke-width="3"/><path d="M12 17Q22.5 9 33 17L29 31H16Z"/><rect x="12" y="30" width="21" height="4" rx="2"/><rect x="10" y="34" width="25" height="6" rx="3"/>'};
+const xpiece=(T,col)=>`<svg viewBox="0 0 45 45" class="xpc" aria-hidden="true"><g fill="${col}" stroke="#1c1917" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round">${XPATH[T]}</g></svg>`;
+const PROF=face('#ffd84d','happy',2).replace('</svg>','<circle cx="23" cy="32" r="8.5" fill="none" stroke="#1c1917" stroke-width="3"/><circle cx="41" cy="32" r="8.5" fill="none" stroke="#1c1917" stroke-width="3"/><path d="M31.5 31h1" stroke="#1c1917" stroke-width="3"/><path d="M9 11L32 1L55 11L32 20Z" fill="#1c1917"/><path d="M20 15v6q12 5 24 0v-6" fill="#1c1917"/><path d="M32 10L51 13V23" fill="none" stroke="#ffd84d" stroke-width="2"/><circle cx="51" cy="24" r="2.5" fill="#ffd84d"/></svg>');
+const xp=(X,s)=>s===0?X.wp:1-X.wp;
+const xs=(X,p)=>p===X.wp?0:1;
+const cname=p=>p===0?'vermelhas':'azuis';
+function newXadrez(prev){return{id:rid(),b:'rnbqkbnrpppppppp'+'.'.repeat(32)+'PPPPPPPPRNBQKBNR',t:0,cast:'KQkq',ep:-1,half:0,n:0,last:null,wp:prev?1-(prev.wp===1?1:0):0}}
+const INIT={Q:1,R:2,B:2,N:2,P:8};
+function missing(b,sd){const c={Q:0,R:0,B:0,N:0,P:0};for(const ch of b)if(ch!=='.'&&xside(ch)===sd&&c[xt(ch)]!==undefined)c[xt(ch)]++;const out=[];for(const k of['Q','R','B','N','P'])for(let i=0;i<Math.max(0,INIT[k]-c[k]);i++)out.push(k);return out}
+function material(b,sd){let s=0;for(const ch of b)if(ch!=='.'&&xside(ch)===sd&&xt(ch)!=='K')s+=XV[xt(ch)];return s}
+function threatsOf(X,sd){
+  const out=[];
+  for(let i=0;i<64;i++){const ch=X.b[i];if(xside(ch)!==sd||xt(ch)==='K')continue;const T=xt(ch),atk=attackers(X.b,i,1-sd);if(!atk.length)continue;
+    const def=attackers(X.b,i,sd).length,minA=atk.reduce((a,x)=>XV[x.p]<XV[a.p]?x:a);
+    const loss=!def?XV[T]:XV[minA.p]<XV[T]?XV[T]-XV[minA.p]:0;if(loss>0)out.push({s:i,T,by:minA,loss})}
+  return out.sort((a,b)=>b.loss-a.loss);
+}
+function insufficient(b){const p=[...b].filter(ch=>ch!=='.'&&xt(ch)!=='K');return !p.length||(p.length===1&&'BN'.includes(xt(p[0])))}
+function risky(base,m){const sd=base.t,Y=xapply(base,m),T=m.promo||m.pc;if(T==='K')return false;const atk=attackers(Y.b,m.t,1-sd);if(!atk.length)return false;const def=attackers(Y.b,m.t,sd).length;return !def||Math.min(...atk.map(a=>XV[a.p]))<XV[T]}
+function bestMove(X){
+  const t=X.t,o=1-t,before=threatsOf(X,t),hb=before.length?before[0].loss:0;let best=null;
+  for(const m of legal(X)){
+    const Y=xapply(X,m),opp=legal(Y),chk=inCheck(Y,o);let s=0,why='';
+    if(!opp.length&&chk){s=1000;why='é xeque-mate! O Rei adversário não tem para onde fugir'}
+    else{
+      if(!opp.length)s-=500;
+      const gain=(m.cap?XV[m.cap]:0)+(m.promo?XV[m.promo]-1:0),after=threatsOf(Y,t),ha=after.length?after[0].loss:0;
+      s+=gain*10-ha*10;
+      if(chk)s+=3;if(m.castle)s+=6;
+      if(X.n<24){if((m.pc==='N'||m.pc==='B')&&(m.f>>3)===(t===0?7:0))s+=4;if(m.pc==='P'&&[27,28,35,36].includes(m.t))s+=4;if(m.pc==='Q'&&X.n<12)s-=3;if(m.pc==='K'&&!m.castle)s-=5}
+      if('NBQ'.includes(m.pc)){const r=m.t>>3,c=m.t&7;s+=(3.5-Math.max(Math.abs(r-3.5),Math.abs(c-3.5)))*.7;if(m.pc==='N'&&(c===0||c===7))s-=2}
+      s+=Math.random()*.6;
+      if(m.promo&&gain>0)why=`o Peão chega ao fim do tabuleiro e vira ${m.promo==='Q'?'Dama':XN[m.promo]}`;
+      else if(m.cap&&gain*10-ha*10>0)why=`ganha ${o_(m.cap)} ${XN[m.cap]} adversári${o_(m.cap)}`;
+      else if(hb>0&&ha<hb)why='tira sua peça do perigo';
+      else if(m.castle)why='o roque esconde o Rei num cantinho seguro e coloca a Torre no jogo';
+      else if(chk&&ha===0)why='dá xeque e obriga o adversário a se defender';
+      else if((m.pc==='N'||m.pc==='B')&&X.n<24&&(m.f>>3)===(t===0?7:0))why='tira a peça de casa e ajuda a controlar o centro';
+      else if(m.pc==='P'&&[27,28,35,36].includes(m.t))why='ocupa o centro do tabuleiro, que é a região mais importante';
+      else why='é um lance seguro, sem deixar peças desprotegidas';
+    }
+    if(!best||s>best.s)best={m,s,why};
+  }
+  return best;
+}
+const TIPS0=['No começo, coloque Peões no centro (as colunas d e e). Quem controla o centro tem mais espaço.','Tire os Cavalos e os Bispos de casa logo cedo. Peça parada não ajuda!','Faça o roque cedo: ele protege o Rei e coloca a Torre no jogo.','Evite sair com a Dama muito cedo: ela vira alvo fácil.','Antes de jogar, pergunte: o que o adversário está ameaçando?'];
+const TIPS1=['Antes de mover, olhe se a casa é segura (casas vermelhas são perigosas).','Procure lances que dão xeque, capturam ou ameaçam peças.','Troque peças quando estiver ganhando em material.','Peças valem pontos: Peão 1, Cavalo 3, Bispo 3, Torre 5, Dama 9.','Duas Torres juntas na mesma linha ficam muito fortes.','Proteja as peças umas com as outras, como um time.'];
+const XS={sel:-1,insp:-1,seen:-1,hint:null,help:LS.get('duelo-xhelp',true)};
+function xDesc(L){
+  let s=`${esc(nm(L.by))} jogou ${o_(L.pc)} <b>${XN[L.pc]}</b> de ${sqn(L.f)} para ${sqn(L.t)}`;
+  if(L.castle)s=`${esc(nm(L.by))} fez o <b>roque ${L.castle==='K'?'pequeno':'grande'}</b>: o Rei andou 2 casas e a Torre pulou para o outro lado dele. É um jeito de proteger o Rei.`;
+  else{if(L.ep)s+=', capturando o Peão <b>en passant</b> (um Peão que andou 2 casas pode ser capturado como se tivesse andado só 1)';else if(L.cap)s+=`, capturando ${o_(L.cap)} ${XN[L.cap]}`;s+='.';if(L.promo)s+=` O Peão chegou ao fim e <b>virou ${XN[L.promo]}</b>!`}
+  if(L.chk)s+=' <b>Xeque!</b>';
+  return s;
+}
+function rX(){
+  const X=S.xadrez,t=X.t===1?1:0,turnP=xp(X,t),vS=local?0:xs(X,me),flip=vS===1,my=can(turnP)&&!S.res;
+  const key='x'+X.id+(flip?'f':'');
+  if(stage.dataset.k!==key){
+    stage.dataset.k=key;XS.sel=-1;XS.insp=-1;XS.hint=null;XS.seen=X.n;
+    let h='';
+    for(let dr=0;dr<8;dr++)for(let dc=0;dc<8;dc++){const s=flip?(7-dr)*8+(7-dc):dr*8+dc,light=((s>>3)+(s&7))%2===0;
+      h+=`<button class="xq ${light?'l':'d'}" data-s="${s}" aria-label="Casa ${sqn(s)}">${dc===0?`<em class="rk">${8-(s>>3)}</em>`:''}${dr===7?`<em class="fl">${'abcdefgh'[s&7]}</em>`:''}<span class="xp"></span></button>`}
+    stage.innerHTML=`<div class="xz"><div class="tray" id="xTop"></div><div class="xb" id="xb">${h}<svg class="xar" id="xar" viewBox="0 0 8 8"></svg></div><div class="tray" id="xBot"></div>
+    <div class="panel coach"><span class="prof">${PROF}</span><div class="bub" id="xMsg" aria-live="polite"></div></div>
+    <div class="xbtns"><button class="btn blue" id="xHint">Me dá uma dica</button><button class="btn ghost" id="xGuide">Como as peças andam</button><button class="btn ghost" id="xHelp"></button><button class="btn ghost" id="xResign">Desistir</button></div></div>`;
+    stage.querySelectorAll('.xq').forEach(q=>q.onclick=()=>xTap(+q.dataset.s));
+    $('#xHint').onclick=xHint;$('#xGuide').onclick=xGuide;$('#xResign').onclick=xResign;
+    $('#xHelp').onclick=()=>{XS.help=!XS.help;LS.set('duelo-xhelp',XS.help);sfx.a();rX()};
+  }
+  const isNew=X.n!==XS.seen,L=X.last;
+  if(isNew){XS.sel=-1;XS.insp=-1;XS.hint=null}
+  const sqEl=s=>stage.querySelector(`.xq[data-s="${s}"]`);
+  stage.querySelectorAll('.xq').forEach(q=>{const s=+q.dataset.s,ch=X.b[s],sp=q.querySelector('.xp');if(sp.dataset.c!==ch){sp.dataset.c=ch;sp.innerHTML=ch==='.'?'':xpiece(xt(ch),COL[xp(X,xside(ch))])}});
+  if(isNew&&L){
+    const disp=s=>flip?[7-(s>>3),7-(s&7)]:[s>>3,s&7],[fr,fc]=disp(L.f),[tr,tc]=disp(L.t),sp=sqEl(L.t).querySelector('.xp');
+    sp.classList.remove('slide');sp.style.setProperty('--dx',fc-tc);sp.style.setProperty('--dy',fr-tr);void sp.offsetWidth;sp.classList.add('slide');
+    if(L.chk){tone(880,.12,'triangle',.07);tone(660,.16,'triangle',.07,.12)}else if(L.cap)sfx.cap();else sfx.b();
+    if(!mine(L.by))buzz(L.chk?[30,40,30]:20);
+  }
+  XS.seen=X.n;
+  // seleção / inspeção
+  const lg=legal(X),selS=XS.sel>=0?XS.sel:XS.insp;let tg=[],info=null;
+  if(selS>=0&&X.b[selS]!=='.'){const ch=X.b[selS],sd=xside(ch),base=sd===t?X:Object.assign({},X,{t:sd,ep:-1});tg=(sd===t?lg:legal(base)).filter(m=>m.f===selS);info={T:xt(ch),sd,own:XS.sel>=0,base}}
+  const chkK=inCheck(X,t)?X.b.indexOf(t===0?'K':'k'):-1;
+  const H=XS.hint&&XS.hint.m;
+  stage.querySelectorAll('.xq').forEach(q=>{
+    const s=+q.dataset.s,m=tg.find(x=>x.t===s);
+    q.classList.toggle('sel',s===selS);
+    q.classList.toggle('mv',!!m&&!m.cap);q.classList.toggle('cp',!!m&&!!m.cap);
+    q.classList.toggle('risk',!!m&&XS.help&&risky(info.base,m));
+    q.classList.toggle('lf',!!L&&s===L.f);q.classList.toggle('lt',!!L&&s===L.t);
+    q.classList.toggle('chk',s===chkK);
+    q.classList.toggle('hf',!!H&&s===H.f);q.classList.toggle('ht',!!H&&s===H.t);
+  });
+  // seta da dica
+  const ar=$('#xar');
+  if(H){const c=s=>flip?[7-(s&7)+.5,7-(s>>3)+.5]:[(s&7)+.5,(s>>3)+.5],[x1,y1]=c(H.f),[x2,y2]=c(H.t),a=Math.atan2(y2-y1,x2-x1),ex=x2-Math.cos(a)*.3,ey=y2-Math.sin(a)*.3;
+    ar.innerHTML=`<line x1="${x1}" y1="${y1}" x2="${ex}" y2="${ey}" stroke="#2f6bff" stroke-width=".2" stroke-linecap="round" opacity=".9"/><path d="M${x2} ${y2}L${ex-Math.cos(a-.5)*.35} ${ey-Math.sin(a-.5)*.35}L${ex-Math.cos(a+.5)*.35} ${ey-Math.sin(a+.5)*.35}Z" fill="#2f6bff"/>`}
+  else ar.innerHTML='';
+  // bandejas de capturas
+  const topS=flip?0:1,botS=1-topS,tray=sd=>{const opp=1-sd,cap=missing(X.b,opp),d=material(X.b,sd)-material(X.b,opp);return `<span>${esc(nm(xp(X,sd)))}</span>${cap.map(T=>xpiece(T,COL[xp(X,opp)])).join('')}${d>0?`<b>+${d}</b>`:''}`};
+  $('#xTop').innerHTML=tray(topS);$('#xBot').innerHTML=tray(botS);
+  // botões
+  $('#xHelp').textContent=XS.help?'Ajuda: ligada':'Ajuda: desligada';
+  $('#xHint').disabled=!my;$('#xResign').disabled=!!S.res||(!local&&!peerOn);
+  // professor
+  let msg='';
+  if(S.res)msg=`<p><b>${esc(S.res.m)}</b></p><p>Toque em Revanche para jogar de novo. Na revanche as cores trocam.</p>`;
+  else if(info){
+    msg=`<p><b>${XN[info.T]}</b> ${XHOW[info.T]}</p>`;
+    if(info.own)msg+=tg.length?`<p>Pode ir para ${tg.length} casa${tg.length>1?'s':''}.${XS.help?' Bolinha = pode ir · anel vermelho = captura · casa avermelhada = perigo, ela pode ser capturada lá.':''}</p>`:'<p>Essa peça não tem nenhum lance agora. Escolha outra.</p>';
+    else msg+=`<p>${info.sd===t&&!my?'É a vez do adversário. ':''}${info.sd!==xs(X,local?turnP:me)||info.sd!==t?'Os pontos mostram para onde essa peça pode ir.':''}</p>`;
+  }else if(XS.hint)msg=XS.hint.text;
+  else{
+    if(L)msg+=`<p>${xDesc(L)}</p>`;
+    if(my){
+      if(chkK>=0){const a=attackers(X.b,chkK,1-t)[0];msg+=`<p><b>Seu Rei está em xeque</b>${a?` ${pel(a.p)} ${XN[a.p]} em ${sqn(a.s)}`:''}! Você é obrigado a salvar o Rei: fugir com ele, colocar uma peça na frente ou capturar quem está atacando.</p>`}
+      else{const th=XS.help?threatsOf(X,t):[];
+        if(th.length){const z=th[0];msg+=`<p><b>Cuidado:</b> ${seu(z.T)} ${XN[z.T]} em ${sqn(z.s)} está ameaçad${o_(z.T)} ${pel(z.by.p)} ${XN[z.by.p]} em ${sqn(z.by.s)}${z.loss<XV[z.T]?' (você perderia na troca)':' e está sem proteção'}.</p>`}
+        else msg+=`<p>${X.n<16?TIPS0[Math.floor(X.n/2)%TIPS0.length]:TIPS1[Math.floor(X.n/2)%TIPS1.length]}</p>`}
+      msg+=`<p class="note" style="margin:0">Toque numa peça para ver para onde ela pode ir.</p>`;
+    }else msg+=`<p>${!L?`As peças de ${esc(nm(xp(X,0)))} começam. `:''}Enquanto ${esc(nm(turnP))} pensa, toque nas peças para estudar como elas andam.</p>`;
+  }
+  $('#xMsg').innerHTML=msg;
+  // status
+  if(S.res){turn(S.res.w);say(S.res.w===null?'Empate!':`${nm(S.res.w)} venceu!`);return}
+  turn(turnP);
+  sayTurn(turnP,`${youOr(turnP)} · ${local?'peças '+cname(turnP):'você joga com as '+cname(me)}${chkK>=0?' · XEQUE!':''}`,`Vez de ${nm(turnP)}${chkK>=0?' · ele está em xeque!':''}`);
+}
+function xTap(s){
+  const X=S.xadrez;if(S.res)return;
+  const t=X.t===1?1:0,my=can(xp(X,t)),ch=X.b[s];
+  if(XS.sel>=0&&my){const ms=legal(X).filter(m=>m.f===XS.sel&&m.t===s);if(ms.length){if(ms[0].promo)xPromo(ms);else xMove(ms[0]);return}}
+  if(ch!=='.'){if(my&&xside(ch)===t){XS.sel=XS.sel===s?-1:s;XS.insp=-1}else{XS.sel=-1;XS.insp=XS.insp===s?-1:s}XS.hint=null;sfx.a();rX();return}
+  if(XS.sel>=0||XS.insp>=0){XS.sel=-1;XS.insp=-1;rX()}
+}
+function xMove(m){
+  const X=S.xadrez,t=X.t===1?1:0,by=xp(X,t);
+  if(!can(by)||S.res)return;
+  const Y=xapply(X,m),o=1-t,chk=inCheck(Y,o);
+  Y.n=(X.n||0)+1;Y.last={f:m.f,t:m.t,pc:m.pc,cap:m.cap||null,promo:m.promo||null,castle:m.castle||null,ep:!!m.ep,chk,by};
+  S.xadrez=Y;XS.sel=-1;XS.insp=-1;XS.hint=null;
+  const nxt=legal(Y);
+  if(!nxt.length){if(chk)setRes(by,'xadrez','Xeque-mate! O Rei não tinha como escapar.','',900);else setRes(null,'xadrez','Afogamento: o Rei não está em xeque, mas não tem nenhum lance. No xadrez isso é empate.','Empate!',700)}
+  else if(insufficient(Y.b))setRes(null,'xadrez','Só sobraram peças que não conseguem dar xeque-mate.','Empate!',700);
+  else if(Y.half>=100)setRes(null,'xadrez','Foram 50 lances sem capturas nem movimento de Peão.','Empate!',700);
+  commit();
+}
+function xPromo(ms){
+  openModal(`<h2>Promoção!</h2><p>Seu Peão chegou do outro lado e vai virar outra peça. A <b>Dama</b> é a mais forte e quase sempre a melhor escolha.</p><div class="row">${['Q','R','B','N'].map(p=>`<button class="btn ghost promo" data-p="${p}">${xpiece(p,COL[xp(S.xadrez,S.xadrez.t)])}${XN[p]}</button>`).join('')}</div>`,'ui');
+  $$('.promo').forEach(b=>b.onclick=()=>{closeModal();const m=ms.find(x=>x.promo===b.dataset.p);if(m)xMove(m)});
+}
+function xHint(){
+  const X=S.xadrez,t=X.t===1?1:0;if(!can(xp(X,t))||S.res)return;
+  const b=bestMove(X);if(!b)return;
+  XS.sel=-1;XS.insp=-1;
+  XS.hint={m:b.m,text:`<p><b>Dica do Professor:</b> que tal mover ${o_(b.m.pc)} <b>${XN[b.m.pc]}</b> de ${sqn(b.m.f)} para ${sqn(b.m.t)}? (veja a seta azul)</p><p>Esse lance ${b.why}.</p>`};
+  sfx.join();rX();
+}
+function xGuide(){
+  const col=COL[local?0:me];
+  openModal(`<h2>Como as peças andam</h2><p><b>Objetivo:</b> dar <b>xeque-mate</b>, ou seja, atacar o Rei adversário de um jeito que ele não consiga escapar.</p>
+  ${['K','Q','R','B','N','P'].map(T=>`<div class="gp">${xpiece(T,col)}<div><b>${XN[T]}</b>${T==='K'?'':` · vale ${XV[T]} ponto${XV[T]>1?'s':''}`}<br>${XHOW[T]}</div></div>`).join('')}
+  <p style="text-align:left"><b>Lances especiais:</b> <b>roque</b> (o Rei anda 2 casas para o lado e a Torre pula por cima dele, se nenhum dos dois se moveu antes), <b>en passant</b> (captura especial de Peão) e <b>promoção</b> (Peão que chega ao fim vira Dama, Torre, Bispo ou Cavalo).</p>
+  <p style="text-align:left"><b>Xeque</b> é quando o Rei está sendo atacado. Você é obrigado a salvá-lo no mesmo lance.</p>
+  <div class="row"><button class="btn" id="gOk">Entendi!</button></div>`,'ui');
+  $('#gOk').onclick=closeModal;
+}
+function xResign(){
+  if(S.res)return;
+  openModal(`<h2>Desistir da partida?</h2><p>O adversário ganha o ponto. Às vezes vale continuar: no xadrez dá para virar o jogo!</p><div class="row"><button class="btn" id="rYes">Desistir</button><button class="btn ghost" id="rNo">Continuar jogando</button></div>`,'ui');
+  $('#rNo').onclick=closeModal;
+  $('#rYes').onclick=()=>{closeModal();const X=S.xadrez,quit=local?xp(X,X.t===1?1:0):me;setRes(1-quit,'xadrez',`${nm(quit)} desistiu da partida.`,'',300);commit()};
+}
+
+
 /* ---------- ligações ---------- */
 $('#bHost').onclick=hostRoom;$('#bJoin').onclick=joinRoom;$('#bLocal').onclick=localGame;
 $('#myname').onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();(code?joinRoom:hostRoom)()}};
@@ -964,7 +1242,7 @@ $('#copy').onclick=()=>{
 $('#nshare').onclick=()=>{try{navigator.share({title:'Duelo!',text:`${myName} te chamou para um duelo!`,url:$('#link').value}).catch(()=>{})}catch(e){}};
 $('#link').onclick=e=>e.target.select();
 $('#retry').onclick=()=>{if(net)net.close();net=null;connect()};
-$('#reset').onclick=()=>{if(!S)return;S.score={velha:[0,0],forca:[0,0],damas:[0,0],domino:[0,0]};sfx.b();commit()};
+$('#reset').onclick=()=>{if(!S)return;S.score={velha:[0,0],forca:[0,0],damas:[0,0],domino:[0,0],xadrez:[0,0]};sfx.b();commit()};
 function muteUI(){$('#mute1').textContent=muted?'Som desligado':'Som ligado';$$('.wave').forEach(w=>w.style.opacity=muted?.15:1)}
 const toggleMute=()=>{muted=!muted;LS.set('duelo-mute',muted);muteUI();sfx.a()};
 $('#mute1').onclick=toggleMute;$$('.mutebtn').forEach(b=>b.onclick=toggleMute);
