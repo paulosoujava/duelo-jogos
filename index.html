@@ -286,6 +286,7 @@ text-shadow:3px 0 var(--line),-3px 0 var(--line),0 3px var(--line),0 -3px var(--
     </div>
   </section>
   <footer class="foot"><button class="chip" id="mute1">Som ligado</button></footer>
+  <p class="note" style="text-align:center">versão 6 · conexão autorreparável</p>
 </main>
 
 <!-- SALA -->
@@ -391,7 +392,8 @@ const blank=()=>({v:0,names:['',''],game:null,score:{velha:[0,0],forca:[0,0],dam
 function valid(st){
   if(!st||typeof st!=='object'||typeof st.v!=='number'||!Array.isArray(st.names)||st.names.length!==2||!st.score)return false;
   if(st.game!==null&&!GAMES.includes(st.game))return false;
-  for(const g of GAMES)if(!Array.isArray(st.score[g])||st.score[g].length!==2)return false;
+  if(typeof st.score!=='object')return false;
+  for(const g of GAMES)if(!Array.isArray(st.score[g])||st.score[g].length!==2)st.score[g]=[0,0];
   if(st.game==='velha'&&!(st.velha&&Array.isArray(st.velha.b)&&st.velha.b.length===9))return false;
   if(st.game==='forca'&&!(st.forca&&Array.isArray(st.forca.ch)&&st.forca.ch.length&&Array.isArray(st.forca.used)))return false;
   if(st.game==='xadrez'&&!(st.xadrez&&typeof st.xadrez.b==='string'&&st.xadrez.b.length===64&&/^[.pnbrqkPNBRQK]+$/.test(st.xadrez.b)))return false;
@@ -452,28 +454,50 @@ async function netRoom(){
 function loadPeerJs(){return new Promise((ok,no)=>{if(window.Peer)return ok();const s=document.createElement('script');s.src='https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js';s.onload=ok;s.onerror=()=>no(new Error('lib'));document.head.appendChild(s)})}
 async function netPeer(){
   await loadPeerJs();
-  let conn=null,peer=null,closed=false,tries=0;
+  let conn=null,pending=null,peer=null,closed=false,tries=0,lastDial=0,timer=0;
   const hook=c=>{
-    c.on('open',()=>{if(conn&&conn!==c){try{conn.close()}catch(e){}}conn=c;setNet('ok','Conectado');setPeer(true);c.send({st:S,me})});
+    c.on('open',()=>{if(conn&&conn!==c){try{conn.close()}catch(e){}}conn=c;pending=null;setNet('ok','Conectado');setPeer(true);try{c.send({st:S,me})}catch(e){}});
     c.on('data',d=>{if(d&&d.st)incoming(d.st,d.me===1?1:0)});
-    c.on('close',()=>{if(conn===c){conn=null;setPeer(false);if(me===1&&!closed)setTimeout(dial,1500)}});
+    c.on('close',()=>{if(conn===c){conn=null;setPeer(false);setNet('connecting',me===0?'Sala aberta, esperando o adversário voltar':'Reconectando com a sala…')}});
+    c.on('error',()=>{});
   };
-  const dial=()=>{if(closed||!peer||peer.destroyed)return;hook(peer.connect('duelo-'+code,{reliable:true}))};
+  const dial=()=>{
+    if(closed||!peer||peer.destroyed||peer.disconnected||!peer.open||me!==1)return;
+    if(conn&&conn.open)return;
+    lastDial=Date.now();
+    if(pending){try{pending.close()}catch(e){}}
+    pending=peer.connect('duelo-'+code,{reliable:true});hook(pending);
+  };
   const start=()=>{
+    if(closed||(peer&&!peer.destroyed))return;
     peer=me===0?new Peer('duelo-'+code):new Peer();
-    peer.on('open',()=>{tries=0;setNet('ok',me===0?'Sala aberta, esperando o adversário':'Procurando a sala…');if(me===1)dial()});
+    peer.on('open',()=>{tries=0;if(me===0)setNet('ok',peerOn?'Conectado':'Sala aberta, esperando o adversário','Pode mandar o link. Se sair do site para mandar, volte para esta tela depois.');else{setNet('connecting','Procurando a sala…');dial()}});
     if(me===0)peer.on('connection',hook);
-    peer.on('disconnected',()=>{if(!closed)try{peer.reconnect()}catch(e){}});
+    peer.on('disconnected',()=>{if(closed)return;setNet('connecting','Reconectando…');setTimeout(()=>{try{if(peer&&!peer.destroyed&&peer.disconnected)peer.reconnect()}catch(e){}},800)});
+    peer.on('close',()=>{});
     peer.on('error',e=>{
       const t=e&&e.type;
-      if(t==='unavailable-id'&&tries<6){tries++;try{peer.destroy()}catch(x){}setTimeout(start,2500);setNet('connecting','Reabrindo a sala…');return}
-      if(t==='peer-unavailable'){setNet('connecting','Esperando quem criou a sala…','Peça para quem criou a sala deixar a página aberta.');setTimeout(dial,3000);return}
-      if(t==='network'||t==='server-error'||t==='socket-error'){setNet('connecting','Reconectando…');setTimeout(()=>{try{peer.reconnect()}catch(x){}},2500);return}
-      setNet('fail','Não deu para conectar',msgFail());
+      if(t==='unavailable-id'){tries++;try{peer.destroy()}catch(x){}setNet('connecting','Reabrindo a sala…','A sala estava presa no servidor, tentando de novo ('+tries+').');setTimeout(start,Math.min(2000+tries*1000,8000));return}
+      if(t==='peer-unavailable'){setNet('connecting','Esperando quem criou a sala…','Peça para quem criou a sala abrir o site de novo (ele precisa estar com a tela da sala aberta).');return}
+      if(t==='network'||t==='server-error'||t==='socket-error'||t==='socket-closed'||t==='disconnected'){setNet('connecting','Reconectando…','Problema de rede ('+t+'). Tentando de novo.');return}
+      if(t==='browser-incompatible'||t==='webrtc'){setNet('fail','Este navegador não conseguiu conectar','Tente abrir o link no Chrome ou no Safari (fora do navegador do WhatsApp/Instagram). Erro: '+t);return}
+      setNet('connecting','Tentando conectar…','Erro: '+(t||'desconhecido'));
     });
   };
+  const watchdog=()=>{
+    if(closed)return;
+    if(!peer||peer.destroyed){start();return}
+    if(peer.disconnected){try{peer.reconnect()}catch(e){try{peer.destroy()}catch(x){}peer=null;start()}return}
+    if(me===1&&!(conn&&conn.open)&&Date.now()-lastDial>4500)dial();
+  };
+  const onVis=()=>{if(!document.hidden)watchdog()};
   start();
-  return{send:st=>{if(conn&&conn.open)try{conn.send({st,me})}catch(e){}},close:()=>{closed=true;try{peer&&peer.destroy()}catch(e){}}};
+  timer=setInterval(watchdog,3000);
+  document.addEventListener('visibilitychange',onVis);addEventListener('online',watchdog);addEventListener('pageshow',watchdog);addEventListener('focus',watchdog);
+  return{
+    send:st=>{if(conn&&conn.open)try{conn.send({st,me})}catch(e){}},
+    close:()=>{closed=true;clearInterval(timer);document.removeEventListener('visibilitychange',onVis);removeEventListener('online',watchdog);removeEventListener('pageshow',watchdog);removeEventListener('focus',watchdog);try{peer&&peer.destroy()}catch(e){}}
+  };
 }
 const msgFail=()=>inClaude()?'Aqui no Claude, os dois precisam estar logados e com acesso a esta página (dono: botão Compartilhar, convidando o amigo).':'Confira a internet dos dois celulares e tente de novo.';
 async function connect(){
