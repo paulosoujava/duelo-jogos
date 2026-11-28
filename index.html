@@ -426,7 +426,7 @@ function setNet(st,txt,note){
   $('#retryRow').hidden=st!=='fail';
 }
 
-/* ---------- conexão: sala do Claude ou PeerJS ---------- */
+/* ---------- conexão: sala do Claude ou retransmissor MQTT ---------- */
 async function netRoom(){
   const room=await window.claude.use('room');
   if(!room)throw new Error('room');
@@ -451,59 +451,64 @@ async function netRoom(){
     close:()=>{try{R?R.leave():room.presence({d:null})}catch(e){}}
   };
 }
-function loadPeerJs(){return new Promise((ok,no)=>{if(window.Peer)return ok();const s=document.createElement('script');s.src='https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js';s.onload=ok;s.onerror=()=>no(new Error('lib'));document.head.appendChild(s)})}
-async function netPeer(){
-  await loadPeerJs();
-  let conn=null,pending=null,peer=null,closed=false,tries=0,lastDial=0,timer=0;
-  const hook=c=>{
-    c.on('open',()=>{if(conn&&conn!==c){try{conn.close()}catch(e){}}conn=c;pending=null;setNet('ok','Conectado');setPeer(true);try{c.send({st:S,me})}catch(e){}});
-    c.on('data',d=>{if(d&&d.st)incoming(d.st,d.me===1?1:0)});
-    c.on('close',()=>{if(conn===c){conn=null;setPeer(false);setNet('connecting',me===0?'Sala aberta, esperando o adversário voltar':'Reconectando com a sala…')}});
-    c.on('error',()=>{});
-  };
-  const dial=()=>{
-    if(closed||!peer||peer.destroyed||peer.disconnected||!peer.open||me!==1)return;
-    if(conn&&conn.open)return;
-    lastDial=Date.now();
-    if(pending){try{pending.close()}catch(e){}}
-    pending=peer.connect('duelo-'+code,{reliable:true});hook(pending);
-  };
-  const start=()=>{
-    if(closed||(peer&&!peer.destroyed))return;
-    peer=me===0?new Peer('duelo-'+code):new Peer();
-    peer.on('open',()=>{tries=0;if(me===0)setNet('ok',peerOn?'Conectado':'Sala aberta, esperando o adversário','Pode mandar o link. Se sair do site para mandar, volte para esta tela depois.');else{setNet('connecting','Procurando a sala…');dial()}});
-    if(me===0)peer.on('connection',hook);
-    peer.on('disconnected',()=>{if(closed)return;setNet('connecting','Reconectando…');setTimeout(()=>{try{if(peer&&!peer.destroyed&&peer.disconnected)peer.reconnect()}catch(e){}},800)});
-    peer.on('close',()=>{});
-    peer.on('error',e=>{
-      const t=e&&e.type;
-      if(t==='unavailable-id'){tries++;try{peer.destroy()}catch(x){}setNet('connecting','Reabrindo a sala…','A sala estava presa no servidor, tentando de novo ('+tries+').');setTimeout(start,Math.min(2000+tries*1000,8000));return}
-      if(t==='peer-unavailable'){setNet('connecting','Esperando quem criou a sala…','Peça para quem criou a sala abrir o site de novo (ele precisa estar com a tela da sala aberta).');return}
-      if(t==='network'||t==='server-error'||t==='socket-error'||t==='socket-closed'||t==='disconnected'){setNet('connecting','Reconectando…','Problema de rede ('+t+'). Tentando de novo.');return}
-      if(t==='browser-incompatible'||t==='webrtc'){setNet('fail','Este navegador não conseguiu conectar','Tente abrir o link no Chrome ou no Safari (fora do navegador do WhatsApp/Instagram). Erro: '+t);return}
-      setNet('connecting','Tentando conectar…','Erro: '+(t||'desconhecido'));
-    });
-  };
-  const watchdog=()=>{
+/* Retransmissor MQTT público (WSS): funciona em 4G, Wi-Fi e atrás de qualquer roteador,
+   sem precisar de ligação direta entre os celulares. Usa dois servidores ao mesmo tempo. */
+const BROKERS=['wss://broker.emqx.io:8084/mqtt','wss://broker.hivemq.com:8884/mqtt'];
+function loadMqtt(){return new Promise((ok,no)=>{if(window.mqtt)return ok();const s=document.createElement('script');s.src='https://unpkg.com/mqtt@5.16.1/dist/mqtt.min.js';s.onload=ok;s.onerror=()=>no(new Error('lib'));document.head.appendChild(s)})}
+async function netRelay(){
+  await loadMqtt();
+  const base='duelo-jogos/v2/'+code, cid=Math.random().toString(36).slice(2,10);
+  const tSt=base+'/st', tP=i=>base+'/p'+i;
+  let closed=false,seen=0,timer=0;
+  const up=()=>clients.some(c=>c.connected);
+  const status=()=>{
     if(closed)return;
-    if(!peer||peer.destroyed){start();return}
-    if(peer.disconnected){try{peer.reconnect()}catch(e){try{peer.destroy()}catch(x){}peer=null;start()}return}
-    if(me===1&&!(conn&&conn.open)&&Date.now()-lastDial>4500)dial();
+    if(!up()){setNet('connecting','Reconectando…','Sem sinal com o servidor. Tentando de novo sozinho.');return}
+    if(peerOn)setNet('ok','Conectado');
+    else if(me===0)setNet('ok','Sala aberta, esperando o adversário','Pode mandar o link. Pode sair para o WhatsApp e voltar, a sala continua aberta.');
+    else setNet('ok','Procurando quem criou a sala…','Quem criou a sala precisa estar com o site aberto.');
   };
-  const onVis=()=>{if(!document.hidden)watchdog()};
-  start();
-  timer=setInterval(watchdog,3000);
-  document.addEventListener('visibilitychange',onVis);addEventListener('online',watchdog);addEventListener('pageshow',watchdog);addEventListener('focus',watchdog);
+  const pub=(t,obj,retain)=>{const m=JSON.stringify(obj);clients.forEach(c=>{if(c.connected)c.publish(t,m,{qos:1,retain})})};
+  const hb=()=>pub(tP(me),{on:1,cid,t:Date.now()},true);
+  const sendSt=()=>{if(S)pub(tSt,{st:S,me,cid},true)};
+  const onMsg=(topic,buf)=>{
+    let d;try{d=JSON.parse(buf.toString())}catch(e){return}
+    if(!d||d.cid===cid)return;
+    if(topic===tP(1-me)){
+      if(d.on&&Date.now()-(d.t||0)<25000){const was=peerOn;seen=Date.now();if(!was){setPeer(true);sendSt();hb()}status()}
+      else if(!d.on){seen=0;if(peerOn){setPeer(false);status()}}
+    }else if(topic===tSt&&d.st&&(d.me===0||d.me===1)&&d.me!==me)incoming(d.st,d.me);
+  };
+  const clients=BROKERS.map(u=>{
+    const c=mqtt.connect(u,{clientId:'duelo_'+cid+'_'+Math.random().toString(36).slice(2,6),clean:true,keepalive:20,connectTimeout:10000,reconnectPeriod:2000,
+      will:{topic:tP(me),payload:JSON.stringify({on:0,cid,t:0}),qos:1,retain:true}});
+    c.on('connect',()=>{c.subscribe([tSt,tP(1-me)],{qos:1});hb();sendSt();status()});
+    c.on('message',onMsg);
+    c.on('close',status);c.on('offline',status);c.on('error',()=>{});
+    return c;
+  });
+  const tick=()=>{
+    if(closed)return;
+    hb();
+    if(peerOn&&Date.now()-seen>16000){setPeer(false)}
+    status();
+  };
+  const onVis=()=>{if(!document.hidden){clients.forEach(c=>{if(!c.connected&&!c.reconnecting)try{c.reconnect()}catch(e){}});hb();sendSt();status()}};
+  timer=setInterval(tick,4000);
+  document.addEventListener('visibilitychange',onVis);addEventListener('online',onVis);addEventListener('pageshow',onVis);
+  setNet('connecting','Conectando…');
   return{
-    send:st=>{if(conn&&conn.open)try{conn.send({st,me})}catch(e){}},
-    close:()=>{closed=true;clearInterval(timer);document.removeEventListener('visibilitychange',onVis);removeEventListener('online',watchdog);removeEventListener('pageshow',watchdog);removeEventListener('focus',watchdog);try{peer&&peer.destroy()}catch(e){}}
+    send:()=>sendSt(),
+    close:()=>{closed=true;clearInterval(timer);document.removeEventListener('visibilitychange',onVis);removeEventListener('online',onVis);removeEventListener('pageshow',onVis);
+      try{pub(tP(me),{on:0,cid,t:0},true)}catch(e){}
+      clients.forEach(c=>{try{c.end(false)}catch(e){}})}
   };
 }
 const msgFail=()=>inClaude()?'Aqui no Claude, os dois precisam estar logados e com acesso a esta página (dono: botão Compartilhar, convidando o amigo).':'Confira a internet dos dois celulares e tente de novo.';
 async function connect(){
   setNet('connecting','Conectando…');
   try{
-    net=inClaude()?await netRoom():await netPeer();
+    net=inClaude()?await netRoom():await netRelay();
     if(inClaude())setNet('ok','Conectado à sala');
     net.send(S);
   }catch(e){net=null;setNet('fail','Não deu para conectar',msgFail())}
